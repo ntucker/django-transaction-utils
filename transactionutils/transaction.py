@@ -130,6 +130,6 @@ def XactModelFormViewMetaFactory(using=None):
     class XactModelFormViewMeta(type):
         def __new__(cls, name, bases, attrs):
             cls = type.__new__(cls, name, bases, attrs)
-            cls.form_valid = xact(using)(cls.form_valid)
+            cls.form_valid = transaction.atomic(using)(cls.form_valid)
             return cls
     return XactModelFormViewMeta

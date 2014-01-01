@@ -1,13 +1,13 @@
 try:
+    from django.db import transaction
+
     from tastypie.resources import ModelResource
-    
-    from .transaction import xact
-    
+
     class TransactionModelResource(ModelResource):
         """Wraps all write methods in a transaction"""
         def dispatch(self, request_type, request, **kwargs):
             if request.method not in ('GET', 'HEAD', 'OPTIONS', 'TRACE'):
-                with xact():
+                with transaction.atomic:
                     return super(TransactionModelResource, self).dispatch(request_type, request, **kwargs)
             else:
                 return super(TransactionModelResource, self).dispatch(request_type, request, **kwargs)
