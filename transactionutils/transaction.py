@@ -126,6 +126,7 @@ def xact(using=None):
         return _TransactionWrapper(using)
 
 # Addition by ntucker for class based views
+# This no longer works in 1.8 - use decorator below instead
 def XactModelFormViewMetaFactory(using=None):
     class XactModelFormViewMeta(type):
         def __new__(cls, name, bases, attrs):
@@ -133,3 +134,10 @@ def XactModelFormViewMetaFactory(using=None):
             cls.form_valid = transaction.atomic(using)(cls.form_valid)
             return cls
     return XactModelFormViewMeta
+
+# Class decorator
+def XactedModelFormView(using=None):
+    def dec(cls):
+        cls.form_valid = transaction.atomic(using)(cls.form_valid)
+        return cls
+    return dec
